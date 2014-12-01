@@ -15,13 +15,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
+ import java.io.BufferedInputStream;
+ import java.io.BufferedOutputStream;
+ import java.io.File;
+ import java.io.FileInputStream;
+ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+ import java.util.zip.ZipEntry;
+ import java.util.zip.ZipInputStream;
 
 public class Activity_Estudiar extends Activity {
 
@@ -39,16 +44,17 @@ public class Activity_Estudiar extends Activity {
         items = (ArrayList<String>)bundle.getStringArrayList("items");
         datos = new ItemTest[items.size()];
 
-
-
         for(int i =0;i <items.size();i++){
             File f = new File(getFilesDir(),"data"+ File.separator+items.get(i));
-            if(f.exists()){
+            System.out.println(f.getAbsolutePath()+"pene");
+
+            if(f.isDirectory()){
                 datos[i]=new ItemTest(items.get(i),"","Realizar", i);
             }
             else{
                 datos[i]=new ItemTest(items.get(i),"","Descargar", i);
             }
+
         }
         AdapterTest adapter = new AdapterTest(this,datos);
         lista.setAdapter(adapter);
@@ -130,6 +136,7 @@ public class Activity_Estudiar extends Activity {
         }
 
         private boolean descomprimirfichero(String fichero){
+
             File f = new File(getFilesDir(),"data" + File.separator + fichero+".zip");
 
             Decompressor decomp;
@@ -142,6 +149,7 @@ public class Activity_Estudiar extends Activity {
         private boolean recibirFichero(String fichero){
             try {
                 File f = new File(getFilesDir(),"data" + File.separator + fichero+".zip");
+                Log.d("path",f.getAbsolutePath());
                 int tamano = entrada.readInt();
                 byte[] buffer = new byte[tamano];
                 int leido = 0;
@@ -177,15 +185,73 @@ public class Activity_Estudiar extends Activity {
 
         @Override
         protected void onPostExecute(Boolean param){
-            Intent intent = new Intent(Activity_Estudiar.this,ActivityLoadingListarTest.class);
-            startActivity(intent);
-            try {
-                asyncDescarga.finalize();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
+            if(param==true) {
+                Toast.makeText(Activity_Estudiar.this,"NO ERROR",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Activity_Estudiar.this, ActivityLoadingListarTest.class);
+                startActivity(intent);
+                try {
+                    asyncDescarga.finalize();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+                finish();
             }
-            finish();
+            else{
+                Toast.makeText(Activity_Estudiar.this,"ERROR",Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
+    class Decompressor {
+
+        private String INPUT_ZIP_FILE = "";
+        private String OUTPUT_FOLDER = "";
+
+        public Decompressor(String zipFileName, String outputFolder) {
+            this.INPUT_ZIP_FILE = zipFileName;
+            this.OUTPUT_FOLDER = outputFolder;
+        }
+
+
+        public void unZip() {
+
+            byte[] buffer = new byte[1024];
+
+            try {
+
+                FileInputStream fis = new FileInputStream(new File(getFilesDir(),INPUT_ZIP_FILE));
+                ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+                ZipEntry entry;
+                while ((entry = zis.getNextEntry()) != null) {
+
+                    System.out.println("Extracting: " + OUTPUT_FOLDER+entry.getName());
+                    File f = new File(getFilesDir(),OUTPUT_FOLDER+entry.getName());
+                    if(f.isFile()){
+                        f.getParentFile().mkdirs();
+                    }
+                    else{
+                        f.mkdirs();
+                    }
+
+
+                    int count;
+                    byte data[] = new byte[1024];
+                    // write the files to the disk
+                    FileOutputStream fos = new FileOutputStream(f);
+                    BufferedOutputStream dest = new BufferedOutputStream(fos, 1024);
+                    while ((count = zis.read(data, 0, 1024)) != -1) {
+                        dest.write(data, 0, count);
+                    }
+                    dest.flush();
+                    dest.close();
+                }
+                zis.close();
+                fis.close();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -36,6 +37,8 @@ public class ActivityLoadingListarTest extends Activity {
         findViewById(R.id.mainSpinner1).setVisibility(View.VISIBLE);
         AsyncTaskListarTest tarea = new AsyncTaskListarTest();
         tarea.execute(new Parametros(1));
+        File f = new File(getFilesDir(),"data"+ File.separator+"t1");
+        f.mkdirs();
         TextView tv_cargando = (TextView) findViewById(R.id.cargando);
 
     }
