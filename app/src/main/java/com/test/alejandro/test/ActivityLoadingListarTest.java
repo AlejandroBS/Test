@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -62,8 +63,8 @@ public class ActivityLoadingListarTest extends Activity {
         return super.onOptionsItemSelected(item);
     }
     class AsyncTaskListarTest extends AsyncTask<Parametros,Progreso,Resultado> {
-        private String ipServidor = "192.168.1.35";
-        private int puerto = 8440;
+
+        private boolean error = false;
         Socket socket;
         @Override
         protected void onPreExecute() {
@@ -75,7 +76,15 @@ public class ActivityLoadingListarTest extends Activity {
             ArrayList<String> listaFicheros = new ArrayList<String>();
             int tamano = 0;
             try {
-                socket = new Socket(ipServidor,puerto);
+                socket = new Socket(DatosConexion.IP,DatosConexion.port);
+
+                if(socket.isConnected()){
+                    error = false;
+                }
+                else{
+                    error = true;
+                    return null;
+                }
                 ObjectOutputStream salida = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream());
                 // le dice al servidor que es un usuario
@@ -88,13 +97,14 @@ public class ActivityLoadingListarTest extends Activity {
                     String s = entrada.readUTF();
                     listaFicheros.add(s);
                     tamano++;
-                    Log.d("hah",s);
+
                     // publishProgress(null);
                 }
-                Log.d("ho","ACABÓ");
+                socket.close();
 
             } catch (IOException e) {
                 e.printStackTrace();
+                error = true;
             }
             return new Resultado(listaFicheros,tamano);
         }
@@ -104,18 +114,30 @@ public class ActivityLoadingListarTest extends Activity {
         }
         @Override
         protected void onPostExecute(Resultado res){
-            listaFicheros = res.listaFicheros;
+            //error = true;
+            if(error == false) {
+                listaFicheros = res.listaFicheros;
 
-            Intent intent = new Intent(ActivityLoadingListarTest.this,Activity_Estudiar.class);
-            //for(int i = 0;i<listaFicheros.size();i++){
-            intent.putExtra("items",listaFicheros);
-            //}
-            startActivity(intent);
+                Intent intent = new Intent(ActivityLoadingListarTest.this, Activity_Estudiar.class);
+                //for(int i = 0;i<listaFicheros.size();i++){
+                intent.putExtra("items", listaFicheros);
+                //}
+                startActivity(intent);
 
-            try {
-                finish();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
+                try {
+                    finish();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            }
+            else{
+                Toast.makeText(ActivityLoadingListarTest.this, "No se pudo conectar con el servidor", Toast.LENGTH_SHORT).show();
+
+                try {
+                    finish();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
     }

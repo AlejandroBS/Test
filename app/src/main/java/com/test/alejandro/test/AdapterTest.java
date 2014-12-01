@@ -38,7 +38,12 @@ public class AdapterTest extends ArrayAdapter<ItemTest>{
             image.setImageResource(R.drawable.download);
         }
         ImageView image2 = (ImageView) item.findViewById(R.id.imageView3);
-        image2.setImageResource(R.drawable.prov_aprobado);
+        if(datos[posicion].getUltimoResultado() == 0) {
+            image2.setImageResource(R.drawable.prov_aprobado);
+        }
+        else{
+            image2.setImageResource(R.drawable.prov_suspenso);
+        }
 
         return item;
     }

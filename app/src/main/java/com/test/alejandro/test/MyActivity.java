@@ -2,12 +2,20 @@ package com.test.alejandro.test;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 import static android.widget.Toast.LENGTH_LONG;
 
@@ -31,6 +39,7 @@ public class MyActivity extends Activity {
             public void onClick(View v){
                 Intent t = new Intent(MyActivity.this,ActivityLoadingListarTest.class);
                 startActivity(t);
+
             }
         });
     }
@@ -54,4 +63,5 @@ public class MyActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+>
+
+    <LinearLayout
+        android:id="@+id/linearLogo"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20px">
+
+        <ImageView
+            android:layout_width="50mm"
+            android:layout_height="9mm"
+            android:id="@+id/imageButton"
+            android:background="@drawable/cooltext1804490055"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/LinearImg1"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLogo"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:baselineAligned="false">
+
+        <ImageButton
+            android:layout_width="20mm"
+            android:layout_height="20mm"
+            android:background="@drawable/estudiar"
+            android:id="@+id/imageButton2"
+
+            android:layout_marginRight="20px"
+            android:layout_weight="1"/>
+
+
+
+        <ImageButton
+            android:layout_width="20mm"
+            android:layout_height="20mm"
+            android:id="@+id/imageButton3"
+            android:background="@drawable/estadisticas"
+            android:layout_weight="1"/>
+
+
+        <ImageButton
+            android:layout_width="20mm"
+            android:layout_height="20mm"
+            android:id="@+id/imageButton4"
+            android:background="@drawable/actualizar"
+            android:layout_weight="1"
+            android:layout_marginRight="20px"/>
+
+        <ImageButton
+            android:layout_width="20mm"
+            android:layout_height="20mm"
+            android:id="@+id/imageButton5"
+            android:background="@drawable/settings"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="20px"
+        android:layout_marginLeft="20px"
+        android:id="@+id/linearLayout">
+
+        <ImageView
+            android:layout_width="50mm"
+            android:layout_height="9mm"
+            android:id="@+id/imageButton6"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/cooltext1804490055"
+            android:contentDescription="Logo"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -8,11 +8,13 @@ public class ItemTest {
     private String nombreTest;
     private String nPreguntas;
     private String estado;
+    private int ultimoResultado;
 
-    public ItemTest(String nombreTest, String nPreguntas, String estado){
+    public ItemTest(String nombreTest, String nPreguntas, String estado, int ultimoResultado){
         this.nombreTest=nombreTest;
         this.nPreguntas=nPreguntas;
         this.estado =estado;
+        this.ultimoResultado=ultimoResultado;
     }
 
     public void setEstado(String estado) {
@@ -41,4 +43,14 @@ public class ItemTest {
     public void setTitulo(String nombreTest) {
         this.nombreTest = nombreTest;
     }
+
+    public int getUltimoResultado() {
+        return ultimoResultado;
+    }
+
+    public void setUltimoResultado(int ultimoResultado) {
+        this.ultimoResultado = ultimoResultado;
+    }
+
+
 }
