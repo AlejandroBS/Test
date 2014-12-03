@@ -41,8 +41,11 @@ public class AdapterTest extends ArrayAdapter<ItemTest>{
         if(datos[posicion].getUltimoResultado() == 0) {
             image2.setImageResource(R.drawable.prov_aprobado);
         }
-        else{
+        if(datos[posicion].getUltimoResultado() == 1){
             image2.setImageResource(R.drawable.prov_suspenso);
+        }
+        if(datos[posicion].getUltimoResultado() == 2){
+            image2.setImageResource(R.drawable.nulo);
         }
 
         return item;

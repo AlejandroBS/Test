@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
@@ -37,9 +38,19 @@ public class ActivityLoadingListarTest extends Activity {
         findViewById(R.id.mainSpinner1).setVisibility(View.VISIBLE);
         AsyncTaskListarTest tarea = new AsyncTaskListarTest();
         tarea.execute(new Parametros(1));
-        File f = new File(getFilesDir(),"data"+ File.separator+"t1");
-        f.mkdirs();
+        File f = new File(Environment.getExternalStorageDirectory().toString()+File.separator+"aprendetest"+File.separator+"data");
+        f.mkdir();
         TextView tv_cargando = (TextView) findViewById(R.id.cargando);
+        File file = getFilesDir();
+        File[] files = file.listFiles();
+        for(int i = 0;i<files.length;i++){
+            Log.d("files",files[i].getAbsolutePath().toString());
+        }
+
+
+
+
+
 
     }
 
