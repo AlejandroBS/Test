@@ -10,7 +10,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -41,7 +43,9 @@ public class realizarTest extends Activity {
 
     Test test;
     Pregunta pregunta;
-    int numPreguntas,numPreguntasInsertadas;
+    int numPreguntas,numPreguntasInsertadas, numPreguntaActual=0, numRespuestasInsertadas=0;
+    int aciertos = 0, fallos = 0;
+    Character[] respuestas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +79,10 @@ public class realizarTest extends Activity {
             //test = (Test) fichero.readUnshared();
             test = (Test) fichero.readObject();
             fichero.close();
+            respuestas = new Character[numPreguntasInsertadas];
+            for(int i = 0; i<numPreguntasInsertadas;i++){
+                respuestas[i] = '0';
+            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -85,26 +93,130 @@ public class realizarTest extends Activity {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        nombreTest.setText(test.getNombreTest());
+        nombreTest.setText(nombreFichero);
         if(test!=null){
-            pregunta = test.getPregunta(0);
-            numPreg.setText("Pregunta "+ 1 +" / " + numPreguntas);
+            pregunta = test.getPregunta(numPreguntaActual);
+            numPreg.setText("Pregunta "+ (numPreguntaActual+1) +" / " + numPreguntasInsertadas);
             bmp = BitmapFactory.decodeFile(_DIRECTORIO_TEST_ + File.separator + pregunta.getImagen());
             imagen.setImageBitmap(bmp);
             enunciado.setText(pregunta.getEnunciado());
             radioA.setText(pregunta.getRespuestaA());
             radioB.setText(pregunta.getRespuestaB());
             radioC.setText(pregunta.getRespuestaC());
-            if(pregunta.getRespuestaCorrecta()=='A'){
-                radioA.setSelected(true);
+            /*if(pregunta.getRespuestaCorrecta()=='A'){
+
+                radioA.setChecked(true);
             }
             else if(pregunta.getRespuestaCorrecta()=='B'){
-                radioB.setSelected(true);
+                radioB.setChecked(true);
             }
             else if(pregunta.getRespuestaCorrecta()=='C'){
-                radioC.setSelected(true);
-            }
-            grupoRadio.setSelected(true);
+                radioC.setChecked(true);
+            }*/
+
+
+            btnAnterior.setEnabled(false);
+            btnAnterior.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    radioA.setChecked(false);
+                    radioB.setChecked(false);
+                    radioC.setChecked(false);
+
+
+                    grupoRadio.clearCheck();
+                    btnSiguiente.setEnabled(true);
+                    numPreguntaActual--;
+                    if (numPreguntaActual == 0) {
+                        btnAnterior.setEnabled(false);
+                    }
+                    pregunta = test.getPregunta(numPreguntaActual);
+                    numPreg.setText("Pregunta " + (numPreguntaActual + 1) + " / " + numPreguntasInsertadas);
+                    bmp = BitmapFactory.decodeFile(_DIRECTORIO_TEST_ + File.separator + pregunta.getImagen());
+                    imagen.setImageBitmap(bmp);
+                    enunciado.setText(pregunta.getEnunciado());
+                    radioA.setText(pregunta.getRespuestaA());
+                    radioB.setText(pregunta.getRespuestaB());
+                    radioC.setText(pregunta.getRespuestaC());
+
+
+                }
+            });
+
+            btnSiguiente.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    radioA.setChecked(false);
+                    radioB.setChecked(false);
+                    radioC.setChecked(false);
+
+                    grupoRadio.clearCheck();
+
+                    btnAnterior.setEnabled(true);
+                    numPreguntaActual++;
+                    if(numPreguntaActual==numPreguntasInsertadas-1){
+                        btnSiguiente.setEnabled(false);
+                    }
+                    pregunta = test.getPregunta(numPreguntaActual);
+                    numPreg.setText("Pregunta "+ (numPreguntaActual+1) +" / " + numPreguntasInsertadas);
+                    bmp = BitmapFactory.decodeFile(_DIRECTORIO_TEST_ + File.separator + pregunta.getImagen());
+                    imagen.setImageBitmap(bmp);
+                    enunciado.setText(pregunta.getEnunciado());
+                    radioA.setText(pregunta.getRespuestaA());
+                    radioB.setText(pregunta.getRespuestaB());
+                    radioC.setText(pregunta.getRespuestaC());
+
+
+
+                }
+            });
+            radioA.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        if (respuestas[numPreguntaActual] != '0') {
+                        numRespuestasInsertadas++;
+                        }
+                        respuestas[numPreguntaActual] = 'A';
+                        if (numRespuestasInsertadas == numPreguntasInsertadas) {
+                            corregir();
+                        }
+                    }
+
+                }
+            });
+
+            radioB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        if (respuestas[numPreguntaActual] != '0') {
+                            numRespuestasInsertadas++;
+                        }
+                        respuestas[numPreguntaActual] = 'B';
+                        if (numRespuestasInsertadas == numPreguntasInsertadas) {
+                            corregir();
+                        }
+                    }
+                }
+            });
+
+            radioC.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        if(respuestas[numPreguntaActual]!='0'){
+                            numRespuestasInsertadas++;
+                        }
+                        respuestas[numPreguntaActual]='C';
+                        if(numRespuestasInsertadas==numPreguntasInsertadas){
+                            corregir();
+                        }
+                    }
+                }
+            });
+
+
 
 
 
@@ -113,6 +225,26 @@ public class realizarTest extends Activity {
         }
     }
 
+
+    private boolean corregir(){
+        aciertos=0;
+        fallos=0;
+        boolean estado = true;
+
+        for(int i = 0;i<numPreguntasInsertadas;i++){
+            if(respuestas[i]==test.getPregunta(i).getRespuestaCorrecta()){
+                aciertos++;
+            }
+            else{
+                fallos++;
+            }
+        }
+        if(((fallos/numPreguntasInsertadas)*10)>3){
+            estado=false;
+        }
+        Log.d("ESTADO", String.valueOf(estado));
+        return estado;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

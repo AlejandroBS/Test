@@ -134,6 +134,7 @@ public class ActivityLoadingListarTest extends Activity {
 
                 Intent intent = new Intent(ActivityLoadingListarTest.this, Activity_Estudiar.class);
                 //for(int i = 0;i<listaFicheros.size();i++){
+                intent.putExtra("conexion","si");
                 intent.putExtra("items", listaFicheros);
                 //}
                 startActivity(intent);
@@ -145,7 +146,12 @@ public class ActivityLoadingListarTest extends Activity {
                 }
             }
             else{
-                Toast.makeText(ActivityLoadingListarTest.this, "No se pudo conectar con el servidor", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ActivityLoadingListarTest.this, Activity_Estudiar.class);
+                //for(int i = 0;i<listaFicheros.size();i++){
+                intent.putExtra("conexion", "no");
+                //}
+                startActivity(intent);
+
 
                 try {
                     finish();

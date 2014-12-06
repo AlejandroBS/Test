@@ -50,29 +50,55 @@ public class Activity_Estudiar extends Activity {
         dialogoProgreso = new ProgressDialog(context);
         _DIRECTORIO_TEST_ =  Environment.getExternalStorageDirectory().toString()+File.separator+"aprendetest"+File.separator+"data";
         //getFilesDir().getAbsolutePath().toString()+File.separator+"aprendetest"+File.separator+"data";
+        if(bundle.getString("conexion")=="si"){
+            items = (ArrayList<String>)bundle.getStringArrayList("items");
 
-        items = (ArrayList<String>)bundle.getStringArrayList("items");
-        datos = new ItemTest[items.size()];
+            datos = new ItemTest[items.size()];
 
             new File(_DIRECTORIO_TEST_).mkdirs();
 
-        File[] f = new File(_DIRECTORIO_TEST_).listFiles();
+            File[] f = new File(_DIRECTORIO_TEST_).listFiles();
 
 
 
 
-        for(int i =0;i <items.size();i++){
+            for(int i =0;i <items.size();i++){
 
-            File file = new File(_DIRECTORIO_TEST_+File.separator+items.get(i));
+                File file = new File(_DIRECTORIO_TEST_+File.separator+items.get(i));
 
-            if(file.exists()==true){
-                datos[i]=new ItemTest(items.get(i),"","Realizar", i);
+                if(file.exists()==true){
+                    datos[i]=new ItemTest(items.get(i),"","Realizar", i);
+                }
+                else{
+                    datos[i]=new ItemTest(items.get(i),"","Descargar", i);
+                }
+
             }
-            else{
-                datos[i]=new ItemTest(items.get(i),"","Descargar", i);
+        }
+        else{
+            File f = new File(_DIRECTORIO_TEST_);
+            File[] ficheros = f.listFiles();
+            datos = new ItemTest[ficheros.length];
+            int j=0;
+
+            for(int i = 0;i<ficheros.length;i++){
+                File fch = new File(_DIRECTORIO_TEST_+File.separator+ficheros[i].getName()+File.separator+ficheros[i].getName()+".test");
+                if(fch.exists()){
+                    j++;
+                }
+            }
+            datos = new ItemTest[j];
+            j=0;
+            for(int i = 0;i<ficheros.length;i++){
+                File fch = new File(_DIRECTORIO_TEST_+File.separator+ficheros[i].getName()+File.separator+ficheros[i].getName()+".test");
+                if(fch.exists()){
+                    datos[j]=new ItemTest(ficheros[i].getName(),"","Realizar", 0);
+                    j++;
+                }
             }
 
         }
+
         AdapterTest adapter = new AdapterTest(this,datos);
         lista.setAdapter(adapter);
 
@@ -80,11 +106,11 @@ public class Activity_Estudiar extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ItemTest item = datos[position];
-                File f = new File(_DIRECTORIO_TEST_+File.separator+items.get(position));
-                if(f.exists()){
+                File fichero = new File(_DIRECTORIO_TEST_+File.separator+item.getTitulo()+File.separator+item.getTitulo()+".test");
+                if(fichero.exists()){
                     Toast.makeText(Activity_Estudiar.this, "CARGANDO...",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Activity_Estudiar.this,realizarTest.class);
-                    intent.putExtra("nombre",items.get(position));
+                    intent.putExtra("nombre",item.getTitulo());
                     startActivity(intent);
                     finish();
                 }
